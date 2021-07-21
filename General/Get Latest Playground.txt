@@ -1,0 +1,36 @@
+-- start ubuntu terminal
+cd plutus/plutus
+git pull
+git checkout 219992289c6615e197069d022735cb4059d43229
+-- this tag can be found in file cabal.project in for example week03 of plutus-pioneer-program
+
+-- start server/client: 
+
+nix-shell
+nix-build -A plutus-playground.client
+nix-build -A plutus-playground.server
+nix-build -A plutus-playground.generate-purescript
+nix-build -A plutus-playground.start-backend
+nix-build -A plutus-pab
+cd plutus-pab
+plutus-pab-generate-purs
+cd ../plutus-playground-server
+plutus-playground-generate-purs
+plutus-playground-server
+
+-- new Terminal
+cd plutus/plutus
+nix-shell
+cd plutus-playground-client
+npm run start
+-- in Browser https://localhost:8009/
+
+-- new Terminal for cabal repl
+cd plutus/plutus-pioneer-program
+git fetch
+cd ../../plutus
+nix-shell
+cd ../../plutus-pioneer-program/code/weekXX/ -- XX -> weekNumber eg 03
+cabal update
+cabal build
+cabal repl

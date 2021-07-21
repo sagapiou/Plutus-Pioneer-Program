@@ -1,0 +1,28 @@
+1. Get wallet Hash
+============================================
+cd plutus/plutus
+nix-shell
+cd ../../plutus-pioneer-program/code/week03/
+cabal repl
+> :l src/Week03/Vesting.hs
+> import Ledger
+> import Wallet.Emulator
+> pubKeyHash $ walletPubKey $ Wallet 2
+> pubKeyHash $ walletPubKey $ Wallet 3
+Copy the first Hash which matches to Wallet
+
+2. How to get the slot - POSIXTime
+============================================
+cd plutus/plutus
+nix-shell
+cd ../../plutus-pioneer-program/code/week03/
+cabal repl
+> import Ledger.TimeSlot
+> :t slot
+> :t slotToBeginPOSIXTime
+> :i SlotConfig
+> import Data.Default
+> :i Default
+> def :: SlotConfig
+> slotToBeginPOSIXTime def 10
+> slotToBeginPOSIXTime def 20
