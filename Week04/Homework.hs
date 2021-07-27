@@ -31,8 +31,7 @@ payContract = do
     pp <- endpoint @"pay"
     let tx = mustPayToPubKey (ppRecipient pp) $ lovelaceValueOf $ ppLovelace pp
     Contract.logInfo @String "Before Transaction"
--- error handler on submitTx if something wrong then the transaction doesnt get executed and 
--- even the After Transaction log statement is not shown but emulator trace keeps on and tests the second amount
+-- error handler on submitTx if something wrong then the transaction doesnt get executed 
     Contract.handleError 
       (\err -> Contract.logError $ "caught: " ++ unpack err) 
       (void $ submitTx tx)
