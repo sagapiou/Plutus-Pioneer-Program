@@ -1,0 +1,17 @@
+NFTs
+============================ 
+
+NFTs for the plutus approach are native tokens that should be created once - "uniquely" and have an amount of 1. They should never be able to be recreated (same currencySymbol and tokenName) and the amount must be 1. In order to satisfy both of the above conditions we can make sure of the amount by creating a minting policy and reading the txInfoForge from the txInfo and making sure that the combination of CurrencySymbol, tokenName and amount are what they must be (1). To ensure the unique creation we make sure of it by introducing a UTXO input (input for the wallet part utxo output for the policy) inside the transaction through which the fees are settled and make this transaction unique for the whole blockchain. Doing this and introducing this unique value will create a unique hash for the minting policy that cannot be reproduced by any other NFT since the identity of each UTXO is unique (the combination of a the transaction that created it as an output + which output of this transaction it is) and is brought in the minting policy for the fee settlement. After this unique UTXO has become an input for the transaction that creates the NFT, this unque UTXO gets destroyed a new one is formed (total ada amount - fees) that has a completely different UTXO identity. To ensure all the above mentioned we check the txInfoInputs of the txInfo to see if the outerRef conisdered unique for the specific NFT is included in the ScriptContext (2).
+
+    -- (1)
+    hasUTxO :: Bool
+    -- check whether the UTXO is included in the scriptcontext inside the txInfoInputs
+    hasUTxO = any (\i -> txInInfoOutRef i == oref) $ txInfoInputs info
+
+    -- (2)    
+    checkMintedAmount :: Bool
+    -- check whether one and Only one Value has been created with exactly the data we want i.e amount = 1 tn and cs
+    -- cs can be ignored for this specific fuction so we could have  [(_, tn', amt)] -> tn' == tn && amt == 1   
+    checkMintedAmount = case flattenValue (txInfoForge info) of
+        [(cs, tn', amt)] -> cs  == ownCurrencySymbol ctx && tn' == tn && amt == 1
+        _                -> False 

@@ -1,0 +1,31 @@
+Native Tokens and NFTs
+============================
+
+Value : CurrencySymbol, TokenName, Amount
+============================
+Modules :
+1. Plutus.V1.Ledger.Value
+2. (special for ada) Plutus.V1.Ledger.Ada
+
+Both CurrencySymbol and TokenName are bytestrings (in order to work with them we use the :set-XOverloadedStrings in the repl). CurrencySymbol is a hexadecimal value and represents the hash value of the script (Minting Policy) that creates the token and must be included in any transaction that wants to mint or burn this token. The TokenName can take any string value. Amount is the amount of tokens and can be minted or burned depending on the calling transaction and the policy.  
+
+adaCurrency that returns 
+adaToken that returns ("")
+lovelaceValueOf 123 returns Value (Map [(,Map [("",123)])])
+lovelaceValueOf 123 <> lovelaceValueOf 100 will add the 2 amountsand give Value (Map [(,Map [("",223)])])
+singleton "123a" "saga" 1000 will return Value (Map [(123a,Map [("saga",1000)])])
+singleton "123a" "saga" 1000 <> lovelaceValueOf 42 <> singleton "123a" "saga2" 1000 wil return Value (Map [(,Map [("",42)]),(123a,Map [("saga",1000),("saga2",1000)])])
+let v = singleton "123a" "saga" 1000
+valueOf v "123a" "saga" will return 1000
+flattenValue v will return [("123a","saga",1000)]
+
+
+Transaction for minting policies
+============================ 
+in TxInfo if txInfoForge is not 0 then for each currency symbol that appears here the corresponing script is executed
+in scriptContenPurpose the purpose will be minting with the relative currencySymbol for the transaction
+
+Minting policies have Redeemer and context (no datum) 
+
+Minting with a positive amount creates native token. With a negative amount burns native token.
+
