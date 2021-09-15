@@ -1,0 +1,80 @@
+When
+    [Case
+        (Deposit
+            (Role "Charlie")
+            (Role "Charlie")
+            (Token "" "")
+            (AddValue
+                (Constant 10)
+                (Constant 10)
+            )
+        )
+        (When
+            [Case
+                (Deposit
+                    (Role "Bob")
+                    (Role "Bob")
+                    (Token "" "")
+                    (Constant 10)
+                )
+                (When
+                    [Case
+                        (Deposit
+                            (Role "Alice")
+                            (Role "Alice")
+                            (Token "" "")
+                            (Constant 10)
+                        )
+                        (When
+                            [Case
+                                (Choice
+                                    (ChoiceId
+                                        "Winner"
+                                        (Role "Charlie")
+                                    )
+                                    [Bound 1 2]
+                                )
+                                (If
+                                    (ValueEQ
+                                        (ChoiceValue
+                                            (ChoiceId
+                                                "Winner"
+                                                (Role "Charlie")
+                                            ))
+                                        (Constant 1)
+                                    )
+                                    (Pay
+                                        (Role "Alice")
+                                        (Account (Role "Bob"))
+                                        (Token "" "")
+                                        (Constant 10)
+                                        Close 
+                                    )
+                                    (Pay
+                                        (Role "Bob")
+                                        (Account (Role "Alice"))
+                                        (Token "" "")
+                                        (Constant 10)
+                                        Close 
+                                    )
+                                )]
+                            40
+                            (Pay
+                                (Role "Charlie")
+                                (Account (Role "Bob"))
+                                (Token "" "")
+                                (Constant 10)
+                                (Pay
+                                    (Role "Charlie")
+                                    (Account (Role "Alice"))
+                                    (Token "" "")
+                                    (Constant 10)
+                                    Close 
+                                )
+                            )
+                        )]
+                    30 Close 
+                )]
+            20 Close 
+        )]
+    10 Close 
